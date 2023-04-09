@@ -25,7 +25,7 @@ public class Client {
 	private static Text text;
 
 	public static void main(String[] args) {
-		
+		//test
 		Display display = Display.getDefault();
 		Shell shell = new Shell();
 		shell.setSize(450, 300);
