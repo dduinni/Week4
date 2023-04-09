@@ -40,6 +40,7 @@ public class Server {
 		PrintWriter out = null;
 		//test
 		//수정
+		//test2
 		try {
 			ss = new ServerSocket(4444);
 		}catch(IOException e) {
