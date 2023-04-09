@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
 public class Server {
 	private static final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private static Text text;
-	
+	//test
 	public static void main(String[] args) {
 		Display display = Display.getDefault();
 		Shell shell = new Shell();
