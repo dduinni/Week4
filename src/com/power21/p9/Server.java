@@ -38,7 +38,7 @@ public class Server {
 		ServerSocket ss = null;
 		BufferedReader in = null;
 		PrintWriter out = null;
-		
+		//test
 		try {
 			ss = new ServerSocket(4444);
 		}catch(IOException e) {
