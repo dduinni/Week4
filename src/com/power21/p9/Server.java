@@ -38,25 +38,27 @@ public class Server {
 		ServerSocket ss = null;
 		BufferedReader in = null;
 		PrintWriter out = null;
-		//test
-		//수정
-		//test2 dd
+		
 		try {
 			ss = new ServerSocket(4444);
 		}catch(IOException e) {
 			System.out.println("해당 포트가 열려있습니다.");
 		}
 		
+		shell.open();
+		shell.layout();
+		
 		try {
 			System.out.println("서버가 열렸습니다.");
 			socket = ss.accept();
+			
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
 			
 			String str= null;
 			str = in.readLine();
 			
-			System.out.println(str);
+			text.setText(str);
 			
 			out.write(str);
 			out.flush();
@@ -65,8 +67,7 @@ public class Server {
 		}catch(IOException e) {
 			
 		}
-		shell.open();
-		shell.layout();
+		
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();

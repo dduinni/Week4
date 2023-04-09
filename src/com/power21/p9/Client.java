@@ -35,62 +35,78 @@ public class Client {
 		composite.setBounds(0, 0, 432, 253);
 		formToolkit.paintBordersFor(composite);
 		
+		text = new Text(composite, SWT.BORDER);
+		text.setBounds(6, 10, 320, 30);
+		formToolkit.adapt(text, true, true);
+		
 		Button btn = formToolkit.createButton(composite, "전송", SWT.PUSH);
 		btn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-
 				Socket socket = null;
 				InetAddress ia = null;
 				BufferedReader in = null;
-				BufferedReader in2 = null;
 				PrintWriter out = null;
-				
-				System.out.println("서버로 메세지가 전송되었습니다.");
-				// 서버한테 메세지가 전달되면 넣는 코드 - if문
-				// 코드 추가해야 함.
-				MessageBox messageBox = new MessageBox(shell, SWT.OK);
-				messageBox.setText("Success");
-				messageBox.setMessage("서버로 메세지가 전송되었습니다.");
-				messageBox.open();
-				
+
+				// 스트림 설정 부분
 				try {
 					ia = InetAddress.getLocalHost();
 					socket = new Socket(ia, 4444);
 					in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					in2 = new BufferedReader(new InputStreamReader(System.in));
-					out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
-					
-					System.out.println(socket.toString());
-					
+					out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));					
 				}catch(IOException exception) {
 					
 				}
 				
+				// 서버가 열려있지 않을때
+				if(socket==null) {
+					showMsgbox(shell, "Fail", "서버가 열려있지 않습니다");
+					return;
+				} else {
+					System.out.println(socket.toString());
+				}
+				
+				
 				try {
-					String data = in2.readLine();
-					out.println(data);
-					out.flush();
+					String data = text.getText();
+					// 사용자로부터 입력받은 텍스트
+					if (data.isEmpty()) {
+						showMsgbox(shell, "Fail", "텍스트를 입력하세요");
+						return;
+					}
+					else {
+						out.println(data);
+						out.flush();
+						
+						String str2 = in.readLine();
+						socket.close();
+						
+						// 서버한테 메세지가 전달되면 넣는 코드 - if문
+						// 코드 추가해야 함.
+						showMsgbox(shell, "Success", "메시지가 전송되었습니다.");
+						
+					}
 					
-					String str2 = in.readLine();
-					socket.close();
 				}catch(IOException exception) {
 					
 				}
 			}
 		});
 		btn.setBounds(332, 10, 93, 30);
-		
-		text = new Text(composite, SWT.BORDER);
-		text.setBounds(6, 10, 320, 30);
-		formToolkit.adapt(text, true, true);
 
 		shell.open();
 		shell.layout();
+		
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}
 		}
+	}
+	public static void showMsgbox(Shell shell, String title, String msg) {
+		MessageBox messageBox = new MessageBox(shell, SWT.OK);
+		messageBox.setText(title);
+		messageBox.setMessage(msg);
+		messageBox.open();
 	}
 }
