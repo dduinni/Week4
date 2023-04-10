@@ -23,7 +23,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class Client {
 	private static final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private static Text text;
-
+	public static Socket socket;
 	public static void main(String[] args) {
 		//test
 		Display display = Display.getDefault();
@@ -39,11 +39,12 @@ public class Client {
 		text.setBounds(6, 10, 320, 30);
 		formToolkit.adapt(text, true, true);
 		
+		socket = null;
+
 		Button btn = formToolkit.createButton(composite, "전송", SWT.PUSH);
 		btn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Socket socket = null;
 				InetAddress ia = null;
 				BufferedReader in = null;
 				PrintWriter out = null;
@@ -51,7 +52,7 @@ public class Client {
 				// 스트림 설정 부분
 				try {
 					ia = InetAddress.getLocalHost();
-					socket = new Socket(ia, 4444);
+					if(socket == null) socket = new Socket(ia, 4444);
 					in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));					
 				}catch(IOException exception) {
@@ -73,20 +74,21 @@ public class Client {
 					if (data.isEmpty()) {
 						showMsgbox(shell, "Fail", "텍스트를 입력하세요");
 						return;
-					}
-					else {
+					} else if (data.equals("종료")) {
+						
+						showMsgbox(shell, "close", "접속이 종료되었습니다.");
 						out.println(data);
 						out.flush();
-						
-						String str2 = in.readLine();
 						socket.close();
-						
-						// 서버한테 메세지가 전달되면 넣는 코드 - if문
-						// 코드 추가해야 함.
-						showMsgbox(shell, "Success", "메시지가 전송되었습니다.");
-						
+						shell.close();
+						return;
 					}
-					
+					out.println(data);
+					out.flush();
+						
+					//String str2 = in.readLine();
+						
+					showMsgbox(shell, "Success", "메시지가 전송되었습니다.");
 				}catch(IOException exception) {
 					
 				}
